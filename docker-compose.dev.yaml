@@ -1,6 +1,6 @@
 services:
   postiz-postgres:
-    image: postgres:alipine # 16.4
+    image: postgres:alpine # 16.4
     container_name: postiz-postgres
     restart: always
     environment:
