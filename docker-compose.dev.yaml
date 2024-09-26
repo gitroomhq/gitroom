@@ -1,6 +1,6 @@
 services:
   postiz-postgres:
-    image: postgres:14.5
+    image: postgres:alipine # 16.4
     container_name: postiz-postgres
     restart: always
     environment:
@@ -11,6 +11,14 @@ services:
       - postgres-volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - postiz-network
+  postiz-redis:
+    image: redis:alpine # 7.4.0
+    container_name: postiz-redis
+    restart: always
+    ports:
+      - 6379:6379
     networks:
       - postiz-network
   postiz-pg-admin:
@@ -24,14 +32,21 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
       - postiz-network
-  postiz-redis:
-    image: redis:7.2
-    container_name: postiz-redis
-    restart: always
+  postiz-redisinsight:
+    image: redis/redisinsight:latest #
+    container_name: postiz-redisinsight
+    links:
+      - postiz-redis
     ports:
-      - 6379:6379
+      - "5540:5540"
+    volumes:
+      - redisinsight:/data
+    networks:
+      - postiz-network
+    restart: always
 
 volumes:
+  redisinsight:
   postgres-volume:
     external: false
 
