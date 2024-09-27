@@ -1,21 +1,21 @@
 'use client';
 
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import { GithubProvider } from '@gitroom/frontend/components/auth/providers/github.provider';
+import { GoogleProvider } from '@gitroom/frontend/components/auth/providers/google.provider';
+import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
-import Link from 'next/link';
+import { useFireEvents } from '@gitroom/helpers/utils/use.fire.events';
+import { CreateOrgUserDto } from '@gitroom/nestjs-libraries/dtos/auth/create.org.user.dto';
 import { Button } from '@gitroom/react/form/button';
 import { Input } from '@gitroom/react/form/input';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { CreateOrgUserDto } from '@gitroom/nestjs-libraries/dtos/auth/create.org.user.dto';
-import { GithubProvider } from '@gitroom/frontend/components/auth/providers/github.provider';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
 import interClass from '@gitroom/react/helpers/inter.font';
-import clsx from 'clsx';
-import { GoogleProvider } from '@gitroom/frontend/components/auth/providers/google.provider';
-import { useFireEvents } from '@gitroom/helpers/utils/use.fire.events';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 type Inputs = {
   email: string;
@@ -83,7 +83,7 @@ export function RegisterAfter({
   token: string;
   provider: string;
 }) {
-  const {isGeneral} = useVariables();
+  const { isGeneral } = useVariables();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const fireEvents = useFireEvents();

@@ -1,14 +1,18 @@
-import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
-import { google } from 'googleapis';
-import { OAuth2Client } from 'google-auth-library/build/src/auth/oauth2client';
 import { ProvidersInterface } from '@gitroom/backend/services/auth/providers.interface';
+import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
+import { OAuth2Client } from 'google-auth-library/build/src/auth/oauth2client';
+import { google } from 'googleapis';
+
+const firstNotEmpty = (...args: string[]) => args.find((arg) => arg) ?? '';
 
 const clientAndYoutube = () => {
-  const client = new google.auth.OAuth2({
-    clientId: process.env.YOUTUBE_CLIENT_ID,
-    clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
+  const options = {
+    clientId: firstNotEmpty(process.env.GOOGLE_CLIENT_ID, process.env.YOUTUBE_CLIENT_ID),
+    clientSecret: firstNotEmpty(process.env.GOOGLE_CLIENT_SECRET, process.env.YOUTUBE_CLIENT_SECRET),
     redirectUri: `${process.env.FRONTEND_URL}/integrations/social/youtube`,
-  });
+  }
+
+  const client = new google.auth.OAuth2(options);
 
   const youtube = (newClient: OAuth2Client) =>
     google.youtube({
