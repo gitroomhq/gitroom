@@ -3,7 +3,7 @@ import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
 import { OAuth2Client } from 'google-auth-library/build/src/auth/oauth2client';
 import { google } from 'googleapis';
 
-const firstNotEmpty = (...args: string[]) => args.find((arg) => arg) ?? '';
+const firstNotEmpty = (...args: (string|undefined)[]) => args.find((arg) => arg !== undefined && arg !== '') ?? '';
 
 const clientAndYoutube = () => {
   const options = {

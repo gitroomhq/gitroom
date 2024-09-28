@@ -4,12 +4,14 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Request, Response } from 'express';
 
-const { CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_ACCESS_KEY, CLOUDFLARE_SECRET_ACCESS_KEY, CLOUDFLARE_BUCKETNAME, CLOUDFLARE_BUCKET_URL } =
+const { CLOUDFLARE_ENDPOINT, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_ACCESS_KEY, CLOUDFLARE_SECRET_ACCESS_KEY, CLOUDFLARE_BUCKETNAME, CLOUDFLARE_BUCKET_URL } =
   process.env;
+
+const firstNotEmpty = (...args: (string|undefined)[]) => args.find((arg) => arg !== undefined && arg !== '') ?? '';
 
 const R2 = new S3Client({
   region: 'auto',
-  endpoint: `https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  endpoint: firstNotEmpty(CLOUDFLARE_ENDPOINT, `https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`),
   credentials: {
     accessKeyId: CLOUDFLARE_ACCESS_KEY!,
     secretAccessKey: CLOUDFLARE_SECRET_ACCESS_KEY!,

@@ -21,6 +21,21 @@ services:
       - 6379:6379
     networks:
       - postiz-network
+  postiz-minio:
+    image: quay.io/minio/minio
+    container_name: postiz-minio
+    command: server /data --console-address ":9001"
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - postiz-network
+    volumes:
+      - minio:/data
+    environment:
+      - MINIO_ROOT_USER=postiz-minio
+      - MINIO_ROOT_PASSWORD=postiz-minio-pwd
+
   postiz-pg-admin:
     image: dpage/pgadmin4
     container_name: postiz-pg-admin
@@ -47,6 +62,8 @@ services:
 
 volumes:
   redisinsight:
+  minio:
+    driver: local
   postgres-volume:
     external: false
 
