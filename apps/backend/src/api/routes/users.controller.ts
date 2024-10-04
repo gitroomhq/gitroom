@@ -48,11 +48,18 @@ export class UsersController {
       throw new HttpForbiddenException();
     }
 
+    const isEmailNotification = await this._userService.getEmailNotifications(
+      user.id
+    );
+
     return {
       ...user,
+      emailNotifications: isEmailNotification.emailNotifications,
       orgId: organization.id,
       // @ts-ignore
-      totalChannels: organization?.subscription?.totalChannels || pricing.FREE.channel,
+      totalChannels:
+        // @ts-ignore
+        organization?.subscription?.totalChannels || pricing.FREE.channel,
       // @ts-ignore
       tier: organization?.subscription?.subscriptionTier || (!process.env.STRIPE_PUBLISHABLE_KEY ? 'ULTIMATE' : 'FREE'),
       // @ts-ignore
