@@ -1,6 +1,6 @@
 services:
   postiz-postgres:
-    image: postgres:14.5
+    image: postgres:alpine # 16.4
     container_name: postiz-postgres
     restart: always
     environment:
@@ -13,6 +13,29 @@ services:
       - 5432:5432
     networks:
       - postiz-network
+  postiz-redis:
+    image: redis:alpine # 7.4.0
+    container_name: postiz-redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - postiz-network
+  postiz-minio:
+    image: quay.io/minio/minio
+    container_name: postiz-minio
+    command: server /data --console-address ":9001"
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - postiz-network
+    volumes:
+      - minio:/data
+    environment:
+      - MINIO_ROOT_USER=postiz-minio
+      - MINIO_ROOT_PASSWORD=postiz-minio-pwd
+
   postiz-pg-admin:
     image: dpage/pgadmin4
     container_name: postiz-pg-admin
@@ -24,14 +47,23 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
       - postiz-network
-  postiz-redis:
-    image: redis:7.2
-    container_name: postiz-redis
-    restart: always
+  postiz-redisinsight:
+    image: redis/redisinsight:latest #
+    container_name: postiz-redisinsight
+    links:
+      - postiz-redis
     ports:
-      - 6379:6379
+      - "5540:5540"
+    volumes:
+      - redisinsight:/data
+    networks:
+      - postiz-network
+    restart: always
 
 volumes:
+  redisinsight:
+  minio:
+    driver: local
   postgres-volume:
     external: false
 
